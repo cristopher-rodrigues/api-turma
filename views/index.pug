@@ -1,0 +1,28 @@
+h1
+  | selecione o seu time
+form
+  select#team
+    option(value='gremio') Gremio
+    option(value='internacional') Internacional
+  button(type='button' onclick='moises()') submit
+  ul#players-list
+script.
+  const moises = () => {
+    const teamElement = document.getElementById("team")
+    if (teamElement.value === "") return false;
+
+    const req = new XMLHttpRequest();
+
+      req.onreadystatechange = () => {
+        if (req.readyState === 4) {
+          const response = JSON.parse(req.response);
+
+          const list = response.players.map((p) => `<li>${p}</li>`).join("")
+
+          document.getElementById("players-list").innerHTML = list;
+        }
+      }
+
+    req.open("GET", `/teams/${teamElement.value}`);
+    req.send();
+  }
